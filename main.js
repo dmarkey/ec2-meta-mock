@@ -1,76 +1,23 @@
 
-// Import the HTTP module
-const http = require("http");
-// Import the URL module
-const url = require("url");
-const os = require("os");
-
-const userInfo = os.userInfo();
+const http = require('http');
 const cp = require('child_process');
-
-// get uid property
-// from the userInfo object
-if (userInfo.uid != 0){
-    console.log("Must be ran as root");
-    process.exit(1)
+const key = process.env.INPUT_KEY.toUpperCase();
+if ( process.env[`STATE_${key}`] != undefined ) { // Are we in the 'post' step?
+  http.get('http://169.254.169.254/shutdown/', (resp) => {
+    let data = '';
+  
+    // A chunk of data has been received.
+    resp.on('data', (chunk) => {
+      data += chunk;
+    });
+  
+    // The whole response has been received. Print out the result.
+    resp.on('end', () => {
+    });
+  
+  }).on("error", (err) => {
+    console.log("Error: " + err.message);
+  });
+} else { // Otherwise, this is the main step
+  var child = cp.exec("nohup sudo -E node server.js > /dev/null 2>&1 &")
 }
-
-if (process.platform == "darwin"){
-    try{
-        cp.execSync("ifconfig lo0 alias 169.254.169.254 255.255.255.255;")
-    }catch{
-
-    }
-    
-} else if (process.platform == "linux"){
-    try{
-        cp.execSync("ip a add 169.254.169.254/32 dev lo;")
-    }catch{
-
-    }    
-} else {
-    console.log("Sorry, " + process.platform + " is not supported")
-    process.exit(1)
-}
-
-var creds = {
-    "Code" : "Success",
-    "LastUpdated" : "1970-00-00T00:00:01Z",
-    "Type" : "AWS-HMAC",
-    "AccessKeyId" : process.env.AWS_ACCESS_KEY_ID,
-    "SecretAccessKey" : process.env.AWS_SECRET_ACCESS_KEY,
-    "Token" : process.env.AWS_SESSION_TOKEN,
-    "Expiration" : new Date(Date.now() + 1000 * 60 * 60 * 6).toISOString()
-  }
-
-  var creds_json = JSON.stringify(creds)
-
-
-
-// Make our HTTP server
-const server = http.createServer((req, res) => {
-    // Parse the request url
-    const reqUrl = url.parse(req.url).pathname
-    console.debug(reqUrl)
-    // Compare our request method
-    if (reqUrl == "/latest/meta-data/iam/security-credentials/") {
-            res.write("default")
-            res.end()
-
-    } else if (reqUrl == "/shutdown/") {
-        res.end()
-        server.close()
-
-    }else if (reqUrl == "/latest/meta-data/iam/security-credentials/default") {
-            res.writeHead(200, {'Content-Type': 'application/json'})
-            res.write(creds_json)
-            res.end()
-    } else{
-        res.writeHead(404)
-        res.write("not found")
-        res.end()
-    }
-    
-})
-// Have the server listen on port 80
-server.listen(80, "169.254.169.254")
