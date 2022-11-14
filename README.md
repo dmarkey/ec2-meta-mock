@@ -64,6 +64,8 @@ Then ec2-meta-mock brings up the EC2 metadata mock service.
 
 You can see the last step runs the AWS cli in docker and prints to the terminal the identity that is being served, notice that no AWS credentials are being passed to the docker container, they are auto discovered by the AWS SDK. This should also work with all other AWS SDKs.
 
+After the build id complete, the service is terminated in a post step.
+
 ```
 name: Example-Build
 
