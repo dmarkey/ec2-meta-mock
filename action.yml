@@ -6,7 +6,6 @@ inputs:
     required: false
     default: POST
 runs:
-  working-directory: "${{ github.action_path }}"
   using: 'node16'
-  main: 'main.js'
-  post: 'main.js'
+  main: 'main.js ${{ github.action_path }}'
+  post: 'main.js ${{ github.action_path }}'
