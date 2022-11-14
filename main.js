@@ -40,7 +40,7 @@ var creds = {
     "AccessKeyId" : process.env.AWS_ACCESS_KEY_ID,
     "SecretAccessKey" : process.env.AWS_SECRET_ACCESS_KEY,
     "Token" : process.env.AWS_SESSION_TOKEN,
-    "Expiration" : process.env.AWS_SESSION_EXPIRATION
+    "Expiration" : new Date(Date.now() + 1000 * 60 * 60 * 6).toISOString()
   }
 
   var creds_json = JSON.stringify(creds)
