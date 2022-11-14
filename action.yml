@@ -8,4 +8,4 @@ inputs:
 runs:
   using: 'node16'
   main: 'main.js'
-  post: 'main.js'
+  post: 'shutdown.js'
