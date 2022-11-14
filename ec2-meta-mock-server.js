@@ -16,22 +16,27 @@ if (userInfo.uid != 0){
 }
 
 if (process.platform == "darwin"){
-    try{
-        cp.execSync("ifconfig lo0 alias 169.254.169.254 255.255.255.255;")
-    }catch{
-
-    }
-    
+    cp.execSync("ifconfig lo0 alias 169.254.169.254 255.255.255.255;")
 } else if (process.platform == "linux"){
-    try{
-        cp.execSync("ip a add 169.254.169.254/32 dev lo;")
-    }catch{
-
-    }    
+    cp.execSync("ip a add 169.254.169.254/32 dev lo;")
 } else {
     console.log("Sorry, " + process.platform + " is not supported")
     process.exit(1)
 }
+
+function shutdown(){
+    console.log('Shutdown received...');
+    server.close();
+    if (process.platform == "darwin"){
+        cp.execSync("ifconfig lo0 delete 169.254.169.254 255.255.255.255;")
+    } else if (process.platform == "linux"){
+        cp.execSync("ip a del 169.254.169.254/32 dev lo;")
+    }
+}
+
+process.once('SIGTERM', function (code) {
+    shutdown()
+});
 
 var creds = {
     "Code" : "Success",
@@ -59,7 +64,7 @@ const server = http.createServer((req, res) => {
 
     } else if (reqUrl == "/shutdown/") {
         res.end()
-        server.close()
+        shutdown()
 
     }else if (reqUrl == "/latest/meta-data/iam/security-credentials/default") {
             res.writeHead(200, {'Content-Type': 'application/json'})
