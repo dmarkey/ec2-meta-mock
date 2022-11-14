@@ -14,6 +14,7 @@ if ( process.env[`STATE_${key}`] != undefined ) { // Are we in the 'post' step?
   
     // The whole response has been received. Print out the result.
     resp.on('end', () => {
+      console.log("Metadata service stopped.")
     });
   
   }).on("error", (err) => {
