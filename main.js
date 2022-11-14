@@ -1,8 +1,8 @@
 
 const http = require('http');
 const cp = require('child_process');
-process.chdir(process.argv[2])
 const key = process.env.INPUT_KEY.toUpperCase();
+console.log(process.env)
 if ( process.env[`STATE_${key}`] != undefined ) { // Are we in the 'post' step?
   http.get('http://169.254.169.254/shutdown/', (resp) => {
     let data = '';

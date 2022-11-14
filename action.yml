@@ -7,5 +7,5 @@ inputs:
     default: POST
 runs:
   using: 'node16'
-  main: 'main.js ${{ github.action_path }}'
-  post: 'main.js ${{ github.action_path }}'
+  main: 'main.js'
+  post: 'main.js'
