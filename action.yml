@@ -1,5 +1,10 @@
 name: 'EC2 Meta Mock'
 description: 'Mock EC2 metadata service'
+inputs:
+  key:
+    description: 'Name of the state variable used to detect the post step.'
+    required: false
+    default: POST
 runs:
   using: 'node16'
   main: 'main.js'
