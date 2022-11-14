@@ -1,0 +1,9 @@
+name: 'EC2 Meta Mock'
+description: 'Mock EC2 metadata service'
+runs:
+  using: "composite"
+  steps:
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash
+    - run: run.sh
+      shell: bash
