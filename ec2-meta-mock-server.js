@@ -78,4 +78,5 @@ const server = http.createServer((req, res) => {
     
 })
 // Have the server listen on port 80
+console.log("ec2-meta-mock started.")
 server.listen(80, "169.254.169.254")
