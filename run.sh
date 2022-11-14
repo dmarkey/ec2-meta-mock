@@ -1,2 +1,2 @@
 #!/bin/bash
-sudo -E node main.js
+nohup sudo -E node main.js &
